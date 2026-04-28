@@ -24,11 +24,4 @@ public class Topic extends BaseEntity{
     @Column(columnDefinition = "TEXT", nullable = false, unique = true)
     private String name;
 
-    @ManyToMany
-    @JoinTable(
-            name = "problem_topic_tx",
-            joinColumns = @JoinColumn(name = "topic_id"),
-            inverseJoinColumns = @JoinColumn(name = "problem_id")
-    )
-    private Set<Problem> problems = new HashSet<>();
 }
