@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ExecutionResultRepository extends JpaRepository<ExecutionResult,String> {
+    void deleteBySubmissionId(String id);
 }
