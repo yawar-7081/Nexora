@@ -3,10 +3,7 @@ package com.nexora.dsa_service.entity;
 import com.nexora.dsa_service.entity.enums.ProblemDificulty;
 import com.nexora.dsa_service.entity.enums.ProblemStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -19,6 +16,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString
 public class Problem extends BaseEntity{
 
     @Column(columnDefinition = "TEXT", nullable = false)

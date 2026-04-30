@@ -5,15 +5,15 @@ import com.nexora.dsa_service.dto.response.Judge0Response;
 import com.nexora.dsa_service.dto.response.SubmissionResponseDto;
 import com.nexora.dsa_service.entity.*;
 import com.nexora.dsa_service.entity.enums.ExecutionResultStatus;
+import com.nexora.dsa_service.entity.enums.ProblemSolveStatus;
 import com.nexora.dsa_service.entity.enums.SubmissionStatus;
-import com.nexora.dsa_service.repository.ExecutionResultRepository;
-import com.nexora.dsa_service.repository.ProblemRepository;
-import com.nexora.dsa_service.repository.SubmissionRepository;
+import com.nexora.dsa_service.repository.*;
 import com.nexora.dsa_service.service.ISubmissionService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -25,6 +25,9 @@ public class SubmissionService implements ISubmissionService {
     private final ExecutionResultRepository executionResultRepository;
     private final Judge0Service judge0Service;
     private final SubmissionRepository submissionRepository;
+    private final UserProblemRepository userProblemRepository;
+    private final UserTopicStatRepository userTopicStatRepository;
+
 
     @Override
     @Transactional
@@ -38,6 +41,16 @@ public class SubmissionService implements ISubmissionService {
                 .filter(l -> l.getLanguage() == dto.getLanguage())
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Language not supported"));
+
+        UserProblem userProblem = userProblemRepository.findByProblemId(problem.getId());
+
+        if(userProblem==null){
+            userProblem = new UserProblem();
+            userProblem.setUserId(dto.getUserId());
+            userProblem.setProblem(problem);
+            userProblem.setFirstAttemptedAt(LocalDateTime.now());
+        }
+
 
         // 1️⃣ Create submission
         Submission submission = new Submission();
@@ -121,6 +134,42 @@ public class SubmissionService implements ISubmissionService {
         submission.setMemoryUsed(response.getMemory() != null ? response.getMemory().longValue() : null);
 
         submissionRepository.save(submission);
+
+
+        if(submission.getStatus()==SubmissionStatus.ACCEPTED && submissionRepository.findByProblemId(problem.getId()).size() == 1){
+            problem.getTopics().forEach(topic -> {
+                UserTopicStat existsUserTopicStat = userTopicStatRepository.findByUserIdAndTopicId(dto.getUserId(), topic.getId());
+
+                if(existsUserTopicStat==null){
+                    existsUserTopicStat = new UserTopicStat();
+                    existsUserTopicStat.setUserId(dto.getUserId());
+                    existsUserTopicStat.setTopic(topic);
+                }
+
+                switch (problem.getProblemDificulty()){
+                    case EASY -> existsUserTopicStat.setEasySolvedCount(existsUserTopicStat.getEasySolvedCount() + 1);
+                    case MEDIUM -> existsUserTopicStat.setMediumSolvedCount(existsUserTopicStat.getMediumSolvedCount() + 1);
+                    case HARD -> existsUserTopicStat.setHardSolvedCount(existsUserTopicStat.getHardSolvedCount() + 1);
+                }
+                existsUserTopicStat.setTotalAttempts(existsUserTopicStat.getTotalAttempts() + 1);
+                existsUserTopicStat.setLastAttemptedAt(LocalDateTime.now());
+                userTopicStatRepository.save(existsUserTopicStat);
+            });
+        }
+
+        if(submission.getStatus()!=SubmissionStatus.ACCEPTED){
+            userProblem.setStatus(ProblemSolveStatus.ATTEMPTED);
+            userProblem.setSubmissionCount(userProblem.getSubmissionCount() + 1);
+            userProblem.setLastAttemptedAt(submission.getCreatedAt());
+        } else {
+            userProblem.setStatus(ProblemSolveStatus.SOLVED);
+            userProblem.setSubmissionCount(userProblem.getSubmissionCount() + 1);
+            userProblem.setSolvedAt(LocalDateTime.now());
+            userProblem.setLastAttemptedAt(submission.getCreatedAt());
+            userProblem.setAcceptedSubmissionCount(userProblem.getAcceptedSubmissionCount() + 1);
+        }
+
+        userProblemRepository.save(userProblem);
 
         return buildResponse(submission, results);
     }
