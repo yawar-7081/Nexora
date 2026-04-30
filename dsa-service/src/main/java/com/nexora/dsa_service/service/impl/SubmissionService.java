@@ -138,7 +138,8 @@ public class SubmissionService implements ISubmissionService {
 
         if(submission.getStatus()==SubmissionStatus.ACCEPTED && submissionRepository.findByProblemId(problem.getId()).size() == 1){
             problem.getTopics().forEach(topic -> {
-                UserTopicStat existsUserTopicStat = userTopicStatRepository.findByUserIdAndTopicId(dto.getUserId(), topic.getId());
+                UserTopicStat existsUserTopicStat = userTopicStatRepository.findByUserIdAndTopicId(dto.getUserId(), topic.getId())
+                    .orElse(null);
 
                 if(existsUserTopicStat==null){
                     existsUserTopicStat = new UserTopicStat();

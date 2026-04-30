@@ -9,13 +9,13 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface UserTopicStatRepository extends JpaRepository<UserTopicStat,String> {
+public interface UserTopicStatRepository extends JpaRepository<UserTopicStat, String> {
     UserTopicStat findByUserId(String userId);
 
     @Query("SELECT uts FROM UserTopicStat uts " +
            "WHERE uts.userId = :userId AND uts.topic.id = :topicId")
     Optional<UserTopicStat> findByUserIdAndTopicId(
         @Param("userId") String userId,
-        @Param("topicId") String topicId
+        @Param("topicId") Long topicId
     );
 }
