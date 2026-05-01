@@ -2,7 +2,8 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
-      <profile name="Annotation profile for notification-service" enabled="true">
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Annotation profile for course-service" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -11,8 +12,8 @@
         </processorPath>
         <module name="course-service" />
         <module name="dsa-service" />
-        <module name="payment-service" />
         <module name="user-service" />
+        <module name="payment-service" />
         <module name="notification-service" />
         <module name="enrollment-service" />
       </profile>
