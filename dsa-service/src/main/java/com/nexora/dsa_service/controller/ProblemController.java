@@ -19,22 +19,22 @@ public class ProblemController {
 
     private final IProblemService problemService;
 
-    @PostMapping("/create-problem")
+    @PostMapping
     public ResponseEntity<ProblemResponseDto> createProblem(@RequestBody(required = true) ProblemRequestDto problemRequestDto){
         return ResponseEntity.ok(problemService.createProblem(problemRequestDto));
     }
 
-    @GetMapping("/{problemId}/get-problem")
+    @GetMapping("/{problemId}")
     public ResponseEntity<ProblemResponseDto> getProblemById(@PathVariable String problemId){
         return ResponseEntity.ok(problemService.getProblemById(problemId));
     }
 
-    @DeleteMapping("/{problemId}/delete-problem")
+    @DeleteMapping("/{problemId}")
     public ResponseEntity<Void> deleteProblemById(@PathVariable String problemId){
         return ResponseEntity.ok(problemService.deleteProblemById(problemId));
     }
 
-    @PostMapping("/get-all-problems")
+    @PostMapping("/dashboard")
     public ResponseEntity<Page<ProblemDashboardResponseDto>> getAllProblems(@RequestBody ProblemDashboardRequestDto problemDashboardRequestDto){
         return ResponseEntity.ok(problemService.getAllProblems(problemDashboardRequestDto));
     }

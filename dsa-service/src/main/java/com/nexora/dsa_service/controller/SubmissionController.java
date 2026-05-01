@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class SubmissionController {
     private final ISubmissionService submissionService;
 
-    @PostMapping("/submit-code")
+    @PostMapping("/submit")
     public ResponseEntity<SubmissionResponseDto> submitCode(@RequestBody SubmissionRequestDto submissionRequestDto){
         return ResponseEntity.ok(submissionService.submitCode(submissionRequestDto));
     }
