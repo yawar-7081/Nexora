@@ -12,8 +12,8 @@
         </processorPath>
         <module name="course-service" />
         <module name="dsa-service" />
-        <module name="payment-service" />
         <module name="user-service" />
+        <module name="payment-service" />
         <module name="notification-service" />
         <module name="enrollment-service" />
       </profile>
