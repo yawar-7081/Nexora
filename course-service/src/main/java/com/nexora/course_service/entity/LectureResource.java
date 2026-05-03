@@ -20,13 +20,19 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LectureResource {
+public class LectureResource 
+        {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     @Column(nullable = false)
     private String resourceUrl;
+    private String publicId;
+    private Long size;
+    private String format;
+    @Enumerated(EnumType.STRING)
+    private ResourceType type;
 
     @Column(nullable = false)
     private String title;
@@ -41,4 +47,5 @@ public class LectureResource {
     @ManyToOne
     @JoinColumn(name = "lecture_id",nullable = false)
     private Lecture lecture;
+}
 }
