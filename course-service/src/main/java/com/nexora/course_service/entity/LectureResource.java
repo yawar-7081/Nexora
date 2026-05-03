@@ -1,5 +1,6 @@
 package com.nexora.course_service.entity;
 
+import com.nexora.course_service.entity.enums.ResourceType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,8 +21,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LectureResource 
-        {
+public class LectureResource {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
@@ -47,5 +47,4 @@ public class LectureResource
     @ManyToOne
     @JoinColumn(name = "lecture_id",nullable = false)
     private Lecture lecture;
-}
 }

@@ -33,6 +33,11 @@ public class Lecture {
     private String description;
 
     private String videoUrl;
+    private String videoPublicId;
+
+    private Long videoSize;
+    private Double videoDuration;
+    private String videoFormat;
 
     @Enumerated(EnumType.STRING)
     private LectureStatus lectureStatus;
