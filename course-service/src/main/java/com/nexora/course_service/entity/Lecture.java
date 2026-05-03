@@ -57,4 +57,5 @@ public class Lecture {
     @OneToMany(mappedBy = "lecture", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LectureResource> lectureResources;
 
+
 }
