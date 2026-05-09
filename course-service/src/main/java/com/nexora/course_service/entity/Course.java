@@ -34,8 +34,13 @@ public class Course {
     @Column(nullable = false)
     private String description;
 
-    @Column(nullable = false)
     private String thumbnailUrl;
+
+    private String publicId;
+
+    private Long size;
+
+    private String format;
 
     @Column(nullable = false)
     private Double price;

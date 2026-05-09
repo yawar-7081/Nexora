@@ -24,7 +24,6 @@ import java.util.List;
 public class CategoryService implements ICategoryService {
 
     private final CategoryRepository repository;
-    private final CategoryTransformer categoryTransformer;
 
 
     @Override
@@ -37,13 +36,13 @@ public class CategoryService implements ICategoryService {
                     + request.getCategoryName());
         }
 
-        Category entity = categoryTransformer.toEntity(request);
+        Category entity = CategoryTransformer.toEntity(request);
         Category saved = repository.save(entity);
 
         log.info("Category created with id: {} || category : {} || createdAt : {} || updatedAt : {}"
                 , saved.getId(),saved.getCategoryName(),saved.getCreatedAt(),saved.getUpdatedAt());
 
-        return categoryTransformer.toDTO(saved);
+        return CategoryTransformer.toDTO(saved);
     }
 
     @Override
@@ -53,7 +52,7 @@ public class CategoryService implements ICategoryService {
 
         return repository.findAll()
                 .stream()
-                .map(categoryTransformer::toDTO)
+                .map(CategoryTransformer::toDTO)
                 .toList();
     }
 
@@ -66,7 +65,7 @@ public class CategoryService implements ICategoryService {
                 .orElseThrow(() -> new RuntimeException(
                         "Category not found with id: " + id));
 
-        return categoryTransformer.toDTO(category);
+        return CategoryTransformer.toDTO(category);
     }
 
     @Override
@@ -93,7 +92,7 @@ public class CategoryService implements ICategoryService {
 
         log.info("Category updated with id: {}", updated.getId());
 
-        return categoryTransformer.toDTO(updated);
+        return CategoryTransformer.toDTO(updated);
     }
 
     @Override

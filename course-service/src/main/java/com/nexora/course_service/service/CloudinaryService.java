@@ -109,6 +109,48 @@ public class CloudinaryService {
         return uploadResult;
     }
 
+    public Map uploadThumbnail(MultipartFile file,String publicId) throws IOException {
+        if(file.isEmpty()){
+            throw new RuntimeException("File is empty");
+        }
+
+        String fileContentType = file.getContentType();
+
+        if(fileContentType == null || !fileContentType.startsWith("image/")){
+            throw new RuntimeException("File is not an image");
+        }
+
+        String originalName = file.getOriginalFilename();
+        if (originalName == null || !originalName.contains(".")) {
+            throw new IllegalArgumentException("Invalid file name");
+        }
+
+        String extension = originalName.substring(originalName.lastIndexOf("."));
+        String fileName = UUID.randomUUID() + extension;
+
+        Map uploadResult;
+
+        try {
+            uploadResult = cloudinary.uploader().upload(
+                    file.getBytes(), // ✅ FIXED
+                    Map.of(
+                            "folder", VIDEO_RESOURCE_FOLDER,
+                            "public_id", fileName,
+                            "resource_type", "auto"
+                    )
+            );
+        } catch (Exception e) {
+            throw new IOException("Upload failed", e);
+        }
+
+        // delete old AFTER success
+        if (publicId != null && !publicId.isBlank()) {
+            cloudinary.uploader().destroy(publicId, Map.of("resource_type", "raw"));
+        }
+
+        return uploadResult;
+    }
+
     private boolean isValidResourceType(String type) {
         return type.equals("application/pdf") ||
                 type.equals("application/zip") ||
